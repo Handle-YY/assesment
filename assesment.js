@@ -1,6 +1,6 @@
 "user strict";
 const userNameInput = document.getElementById("user-name");
-const assesmentButton = document.getElementById("assesment");
+const assesmentButton = document.getElementById("assessment");
 const resultDevision = document.getElementById("result-area");
 const tweetDivision = document.getElementById("tweet-area");
 
@@ -14,21 +14,32 @@ assesmentButton.addEventListener(
       console.log("文字を入力してください。")
       return;
     }
-    //console.log(userName);
-
-    resultDevision.innerText = "";  // 空文字上書き
 
     // 診断結果表示エリアの作成
+    resultDevision.innerText = "";  // 空文字上書き
 
-    // 入れ子状態の要素は、子要素と言う。
-    const header = document.createElement("h3");
-    header.innerText = "診断結果";
-    resultDevision.appendChild(header);
+    // headerDivisionの作成
+    const headerDivision = document.createElement("div");
+    headerDivision.setAttribute("class", "card-header text-bg-primary");
+    headerDivision.innerText = "診断結果";
+
+    // bodyDivisionの作成
+    const bodyDivision = document.createElement("div");
+    bodyDivision.setAttribute("class", "card-body");
 
     const paragraph = document.createElement("p");
+    paragraph.setAttribute("class", "card-text");
+
     const result = assesment(userName);
     paragraph.innerText = result;
-    resultDevision.appendChild(paragraph);
+    bodyDivision.appendChild(paragraph);
+    
+    // resultDivision に Bootstrap のスタイルを適用
+    resultDevision.setAttribute("class", "card");
+
+    // headerDivitsion と bodyDivision を resultDivision に差し込む
+    resultDevision.appendChild(headerDivision);
+    resultDevision.appendChild(bodyDivision);
 
     // ツイートエリアの作成
     tweetDivision.innerText = "";
