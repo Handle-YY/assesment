@@ -45,12 +45,12 @@ assesmentButton.addEventListener(
     tweetDivision.innerText = "";
 
     const anchor = document.createElement("a");
-    const hrefValue = "https://twitter.com/intent/tweet?button_hashtag=" + encodeURIComponent("あなたのいいところ"); + "&ref_src=twsrc%5Etfw";
+    const hrefValue = "https://twitter.com/intent/tweet?button_hashtag=" + encodeURIComponent("あなたのいいところ診断とRPG職業"); + "&ref_src=twsrc%5Etfw";
 
     anchor.setAttribute("href", hrefValue);
     anchor.setAttribute("class", "twitter-hashtag-button");
     anchor.setAttribute("data-text", result);
-    anchor.innerText = "Tweet #あなたのいいところ";
+    anchor.innerText = "Tweet #あなたのいいところ診断とRPG職業";
 
     tweetDivision.appendChild(anchor);
 
@@ -70,7 +70,9 @@ userNameInput.addEventListener(
   }
 )
 
-const answers = [
+// ☆answers から goodPointAnswer に変数名を変更。ここでの変更はこれだけ。
+// ☆マークは、課題を熟すために編集した場所。
+const goodPointAnswers  = [
   "###userName###のいいところは声です。###userName###の特徴的な声は皆を惹きつけ、心に残ります。",
   "###userName###のいいところはまなざしです。###userName###に見つめられた人は、気になって仕方がないでしょう。",
   "###userName###のいいところは情熱です。###userName###の情熱に周りの人は感化されます。",
@@ -89,6 +91,28 @@ const answers = [
   "###userName###のいいところは自制心です。やばいと思ったときにしっかりと衝動を抑えられる###userName###が皆から評価されています。",
   '###userName###のいいところは優しさです。あなたの優しい雰囲気や立ち振る舞いに多くの人が癒されています。'
 ]
+
+// ☆いいところから職業へのマッピング
+const jobMapping = {
+  "声": "吟遊詩人",
+  "まなざし": "魔法使い",
+  "情熱": "戦士",
+  "厳しさ": "暗黒騎士",
+  "知識": "賢者",
+  "ユニークさ": "錬金術師",
+  "用心深さ": "盗賊",
+  "見た目": "騎士",
+  "決断力": "勇者",
+  "思いやり": "僧侶",
+  "感受性": "召喚士",
+  "節度": "忍者",
+  "好奇心": "狩人",
+  "気配り": "弓使い",
+  "そのすべて": "魔剣士",
+  "自制心": "竜騎士",
+  "優しさ": "僧侶"
+};
+
 /**
  * 名前の文字列を渡すと診断結果を返す関数
  * @param {string} userName ユーザの名前
@@ -102,15 +126,39 @@ function assesment(userName){
   }
 
   // 文字のコード番号の合計を回答の数で割って添え字の数値を求める
-  const index = sumOfCharCode % answers.length;
-  let result = answers[index];
+  // ☆「answers」の部分を「goodPointAnswers」へ変更。
+  const index = sumOfCharCode % goodPointAnswers.length;
+  let result = goodPointAnswers[index];
 
   // TODO ###userName### をユーザの名前に置き換える
   result = result.replaceAll("###userName###", userName);
+  // return result; // ☆必要ないと思うので削除。
+
+  // ☆職業を取得
+  const job = getJobFromGoodPoint(result);
+
+  // ☆いいところ診断と職業診断を組み合わせた結果を返す
+  result = result + "\nあなたに最適なRPG職業は「" + job + "」です！";
   return result;
 }
 
+/**
+ * ☆いいところの診断結果から職業を取得する関数
+ * @param {string} goodPointResult いいところ診断の結果文
+ * @return {string} 職業名
+ */
+function getJobFromGoodPoint(goodPointResult) {
+  // いいところのキーワードを抽出
+  for (let key in jobMapping) {
+    if (goodPointResult.includes("いいところは" + key)) {
+      return jobMapping[key];
+    }
+  }
+  return "冒険者"; // デフォルト値
+}
+
 // テストを行う関数
+// ☆内容が変わったのでテストも修正。
 function test(){
   console.log("診断結果の文章のテスト");
 
@@ -118,7 +166,7 @@ function test(){
   console.log("太郎");
   console.assert(
     assesment("太郎") === 
-    "太郎のいいところはユニークさです。太郎だけのその特徴が皆を楽しくさせます。",
+    "太郎のいいところはユニークさです。太郎だけのその特徴が皆を楽しくさせます。\nあなたに最適なRPG職業は「錬金術師」です！",
     "診断結果の文言の特定の部分を名前に書き換える処理が正しくありません。"
   );
 
@@ -126,7 +174,7 @@ function test(){
   console.log("次郎");
   console.assert(
     assesment("次郎") === 
-    "次郎のいいところはそのすべてです。ありのままの次郎自身がいいところなのです。",
+    "次郎のいいところはそのすべてです。ありのままの次郎自身がいいところなのです。\nあなたに最適なRPG職業は「魔剣士」です！",
     "診断結果の文言の特定の部分を名前に書き換える処理が正しくありません。"
   );
 
@@ -134,5 +182,6 @@ function test(){
 
 }
 test();
+
 
 
