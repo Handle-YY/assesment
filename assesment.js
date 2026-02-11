@@ -61,11 +61,22 @@ assesmentButton.addEventListener(
 );
 
 // Enterキーで診断する処理を追加
+// ☆Enterキーを１度押しただけで反応していたので修正
+let enterCount = 0; // Enterキーの押下回数をカウント
 userNameInput.addEventListener(
   "keydown",
   (event) => {
     if(event.code === "Enter"){
-      assesmentButton.dispatchEvent(new Event("click"));
+      enterCount++; // Enterを認識したらカウント１増加
+
+      if(enterCount >= 2){
+        assesmentButton.dispatchEvent(new Event("click"));
+        enterCount = 0; // カウントをリセット
+      }
+    }
+    else {
+      // Enter以外のキーが押されたらカウントをリセット
+      enterCount = 0;
     }
   }
 )
@@ -182,6 +193,7 @@ function test(){
 
 }
 test();
+
 
 
 
